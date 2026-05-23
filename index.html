@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SidolL Dictionary</title>
+
+<style>
+body{
+    margin:0;
+    padding:40px;
+    background:#f5f0e8;
+    font-family:Arial,sans-serif;
+    color:#1a1410;
+}
+
+h1{
+    text-align:center;
+    font-size:42px;
+    margin-bottom:30px;
+}
+
+.search-box{
+    max-width:700px;
+    margin:0 auto 40px;
+}
+
+input{
+    width:100%;
+    padding:18px;
+    font-size:18px;
+    border:2px solid #b8955a;
+    border-radius:12px;
+    outline:none;
+    box-sizing:border-box;
+}
+
+.results{
+    max-width:1000px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    border:1px solid #d8c7a4;
+    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.word{
+    font-size:28px;
+    font-weight:bold;
+    color:#8b6b3d;
+}
+
+.meaning{
+    margin-top:10px;
+    font-size:17px;
+    line-height:1.5;
+}
+
+.meta{
+    margin-top:15px;
+    font-size:14px;
+    color:#666;
+}
+
+.empty{
+    text-align:center;
+    font-size:22px;
+    color:#8b6b3d;
+}
+</style>
+
+<script src="sidolL.js"></script>
+</head>
+
+<body>
+
+<h1>SidolL Dictionary</h1>
+
+<div class="search-box">
+    <input 
+        type="text" 
+        id="searchInput"
+        placeholder="Search SidolL words or meanings..."
+    >
+</div>
+
+<div class="results" id="results"></div>
+
+<script>
+const searchInput = document.getElementById("searchInput");
+const results = document.getElementById("results");
+
+function displayWords(words){
+
+    results.innerHTML = "";
+
+    if(words.length === 0){
+        results.innerHTML = `
+            <div class="empty">
+                No matching words found
+            </div>
+        `;
+        return;
+    }
+
+    words.forEach(item => {
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="word">${item.word}</div>
+
+            <div class="meaning">
+                ${item.english}
+            </div>
+
+            <div class="meta">
+                <div><b>Pronunciation:</b> ${item.pronunciation}</div>
+                <div><b>Type:</b> ${item.pos}</div>
+            </div>
+        `;
+
+        results.appendChild(card);
+    });
+}
+
+displayWords(SIDOLAI_DICT.slice(0,50));
+
+searchInput.addEventListener("input", () => {
+
+    const value = searchInput.value.toLowerCase();
+
+    const filtered = SIDOLAI_DICT.filter(item =>
+        item.word.toLowerCase().includes(value) ||
+        item.english.toLowerCase().includes(value)
+    );
+
+    displayWords(filtered);
+});
+</script>
+
+</body>
+</html>
